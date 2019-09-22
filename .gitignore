@@ -112,3 +112,8 @@ CATKIN_IGNORE
 
 # Visual Studio Code
 /.vscode
+
+# Python Code
+__pycache__
+venv/
+
