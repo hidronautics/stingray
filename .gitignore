@@ -115,5 +115,8 @@ CATKIN_IGNORE
 
 # Python Code
 __pycache__
-venv/
+venv*/
 
+# Experimental ws
+api/tmp_test_ws
+/install
