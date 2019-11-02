@@ -1,10 +1,10 @@
-from flask import request, make_response, jsonify, Response
+from flask import request, make_response
 import jwt
-from utils import get_env
+from utils import get_env, create_response
 
 # setting up
 auth_key = get_env("AUTHKEY", "DEFAULT")
-with open("whitelist.txt", 'r') as wl:
+with open("api/whitelist.txt", 'r') as wl:  # TODO: MAY NOT WORK BECAUSE RELATIVE PATH
     whitelist = [i.rstrip() for i in wl.readlines()]
 
 print(whitelist, " are whitelisted")
@@ -24,19 +24,19 @@ def mw(handler):
             if decoded_token is None:  # 0.5) if not valid, just delete it => rewrite the cookie
                 jwt_present = False
             elif decoded_token.get("ip") in whitelist:
-                print("GAINED ACCESS THROUGH COOKIE")
+                # print("GAINED ACCESS THROUGH COOKIE")
                 return make_response(handler(*args, **kwargs))
 
         if not jwt_present:
             if host in whitelist:
-                print("GAINED ACCESS THROUGH WHITELIST")
+                # print("GAINED ACCESS THROUGH WHITELIST")
                 resp = make_response(handler(*args, **kwargs))
                 new_token = str(jwt.encode({"ip": host}, auth_key, algorithm='HS256')) \
                     .lstrip("b\'").rstrip('\'')
                 resp.set_cookie("jwt_token", new_token)
                 return resp
             else:
-                print(host, " IS NOT WHITELISTED")
-                return make_response(jsonify({"response": "NOT WHITELISTED"}), 401)
+                # print(host, " IS NOT WHITELISTED")
+                return make_response(create_response(False, "NOT WHITELISTED"), 401)
 
     return auth

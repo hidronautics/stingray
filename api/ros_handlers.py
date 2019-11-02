@@ -1,4 +1,5 @@
 from roslaunch import parent as launch_parent, rlutil
+import subprocess
 
 
 class LaunchFile:
@@ -18,3 +19,11 @@ class LaunchFile:
 
     def stop(self):
         self.launch_proc.shutdown()
+
+
+class TopicsUtil:
+    def get_all(self):
+        rostopic_list = subprocess.Popen(["rostopic", "list"],
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.STDOUT)
+        return rostopic_list.communicate()[0].decode("ascii")
