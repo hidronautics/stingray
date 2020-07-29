@@ -122,7 +122,7 @@ class AUV:
             clockwise = -1
 
         for action in script:
-            if not action:
+            if not action or len(action[0]) < 3:
                 continue
             elif action[0] == '#':
                 continue
